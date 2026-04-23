@@ -40,32 +40,39 @@ export function XRayRevealCard({ topImage, bottomImage }: XRayRevealCardProps) {
         transition={{ duration: 0.3 }}
         style={{ 
           backgroundImage: `url(${bottomImage})`,
-          // Black = Show the X-ray layer. Transparent = Hide it (showing the dress underneath).
-          WebkitMaskImage: `radial-gradient(150px circle at ${position.x}px ${position.y}px, black 30%, transparent 100%)`,
-          maskImage: `radial-gradient(150px circle at ${position.x}px ${position.y}px, black 30%, transparent 100%)`,
+          // Smooth gaussian-like fade: strong at the core, quickly softening, then slowly fading to transparent
+          WebkitMaskImage: `radial-gradient(100px circle at ${position.x}px ${position.y}px, black 0%, rgba(0,0,0,0.7) 35%, rgba(0,0,0,0.2) 70%, transparent 100%)`,
+          maskImage: `radial-gradient(100px circle at ${position.x}px ${position.y}px, black 0%, rgba(0,0,0,0.7) 35%, rgba(0,0,0,0.2) 70%, transparent 100%)`,
         }}
       />
 
-      {/* UI Overlay */}
-      <div className="absolute top-6 p-6 pointer-events-none z-10 w-full">
-        <div className="flex justify-between items-start w-full gap-4">
-            <span className="text-xs font-mono font-bold tracking-[0.2em] uppercase text-white drop-shadow-md border border-white/20 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded">X-RAY LENS ACTIVE</span>
+      {/* Premium UI Overlay Frame */}
+      <div className="absolute inset-0 p-8 pointer-events-none flex flex-col justify-end z-10">
+        {/* Bottom Footer / Title */}
+        <div className="w-full flex justify-between items-end">
+          <div className="text-4xl md:text-5xl font-display font-bold text-white drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)] tracking-tighter">
+            X-RAY<br/>SCANNER
+          </div>
+          <div className="text-xs font-mono text-zinc-300 drop-shadow-md text-right">
+             <span>HOVER TO REVEAL</span><br/>
+             <span className="opacity-50 text-[10px]">SCAN IN PROGRESS</span>
+          </div>
         </div>
       </div>
       
-      {/* Dynamic Cursor Ring */}
+      {/* Dynamic Cursor Point */}
       <motion.div 
-        className="absolute pointer-events-none border border-white/60 rounded-full flex items-center justify-center mix-blend-overlay z-20 shadow-[0_0_20px_rgba(255,255,255,0.3)]"
+        className="absolute pointer-events-none flex items-center justify-center mix-blend-overlay z-20"
         animate={{
-            x: position.x - 75,
-            y: position.y - 75,
+            x: position.x - 45,
+            y: position.y - 45,
             opacity: opacity,
             scale: opacity === 1 ? 1 : 0.8
         }}
         transition={{ type: "spring", stiffness: 400, damping: 25, mass: 0.5 }}
-        style={{ width: 150, height: 150 }}
+        style={{ width: 90, height: 90 }}
       >
-          <div className="w-1.5 h-1.5 bg-white rounded-full opacity-80" />
+          <div className="w-1.5 h-1.5 bg-white rounded-full opacity-90 shadow-[0_0_10px_rgba(255,255,255,1)]" />
       </motion.div>
     </div>
   );

@@ -8,6 +8,9 @@ import { ParallaxCard } from './components/ParallaxCard';
 import { DepthMapCard } from './components/DepthMapCard';
 import { SpotlightCard } from './components/SpotlightCard';
 import { XRayRevealCard } from './components/XRayRevealCard';
+import { BrushRevealCard } from './components/BrushRevealCard';
+import { LiquidGlitchCard } from './components/LiquidGlitchCard';
+import { PaintDripRevealCard } from './components/PaintDripRevealCard';
 
 export default function App() {
   const [isEngineInitialized, setIsEngineInitialized] = useState(false);
@@ -191,22 +194,110 @@ export default function App() {
       <section className="w-full px-4 md:px-6 py-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-stretch">
           
-          {/* Slot 1: Spotlight Reveal */}
-          <div className="bento-card p-0 overflow-hidden relative h-[450px]">
-            <SpotlightCard />
+          {/* Slot 1: X-Ray Reveal (Scanner) */}
+          <div className="bento-card p-3 flex flex-col relative h-[450px]">
+            {/* Top Header - Fixed height to guarantee spacing */}
+            <div className="h-8 flex justify-end items-center px-3 flex-shrink-0">
+              <div className="flex items-center gap-2">
+                <motion.div 
+                  animate={{ opacity: [1, 0.4, 1] }} 
+                  transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                  className="w-2 h-2 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)]"
+                />
+                <span className="text-[10px] font-mono font-bold tracking-[0.2em] uppercase text-zinc-400">
+                  X-RAY LENS ACTIVE
+                </span>
+              </div>
+            </div>
+            
+            {/* Image Container */}
+            <div className="relative w-full flex-grow rounded-[16px] overflow-hidden border border-border bg-zinc-900 pointer-events-auto">
+              <XRayRevealCard 
+                topImage="/depth.png" 
+                bottomImage="/color.png" 
+              />
+            </div>
+            
+            {/* Invisible Bottom Spacer to perfectly equalize top & bottom padding around the inner image block */}
+            <div className="h-8 flex-shrink-0 w-full" />
           </div>
 
-          {/* Slot 2: X-Ray Reveal */}
-          <div className="bento-card p-0 overflow-hidden relative h-[450px]">
-            <XRayRevealCard 
-              topImage="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=1000&auto=format&fit=crop" 
-              bottomImage="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1000&auto=format&fit=crop" 
-            />
+          {/* Slot 2: Watercolor / Eraser Reveal */}
+          <div className="bento-card p-3 flex flex-col relative h-[450px]">
+            {/* Top Header */}
+            <div className="h-8 flex justify-between items-center px-3 flex-shrink-0">
+               <span className="text-xs font-mono font-bold tracking-[0.2em] uppercase text-zinc-500 bg-zinc-900/50 px-2 py-1 rounded">EXP_02</span>
+               <span className="text-[10px] font-mono font-bold tracking-[0.2em] uppercase text-zinc-500">DIGITAL CANVAS</span>
+            </div>
+            
+            {/* Component Container */}
+            <div className="relative w-full flex-grow rounded-[16px] overflow-hidden">
+               <BrushRevealCard />
+            </div>
+
+            {/* Bottom Footer Info */}
+            <div className="h-8 flex justify-between items-center px-3 flex-shrink-0 text-zinc-600 font-mono text-[10px] uppercase">
+                <span>INTERACT: DRAG</span>
+                <span>ENGINE: CANVAS_2D</span>
+            </div>
           </div>
 
-          {/* Slot 3: Empty Placeholder */}
+          {/* Slot 3: WebGL Liquid Glitch */}
+          <div className="bento-card p-3 flex flex-col relative h-[450px]">
+            {/* Top Header */}
+            <div className="h-8 flex justify-between items-center px-3 flex-shrink-0">
+               <span className="text-xs font-mono font-bold tracking-[0.2em] uppercase text-zinc-500 bg-zinc-900/50 px-2 py-1 rounded">EXP_03</span>
+               <span className="text-[10px] font-mono font-bold tracking-[0.2em] uppercase text-zinc-500">SURFACE TENSION</span>
+            </div>
+            
+            {/* Component Container */}
+            <div className="relative w-full flex-grow rounded-[16px] overflow-hidden border border-border bg-black">
+               <LiquidGlitchCard />
+            </div>
+
+            {/* Bottom Footer Info */}
+            <div className="h-8 flex justify-between items-center px-3 flex-shrink-0 text-zinc-600 font-mono text-[10px] uppercase">
+                <span>INTERACT: HOVER</span>
+                <span>RENDER: WEBGL</span>
+            </div>
+          </div>
+          
+        </div>
+      </section>
+
+      {/* Row 2: Secondary Experiments */}
+      <section className="w-full px-4 md:px-6 py-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-stretch">
+          
+          {/* Slot 4: Paint Drip / Ink Splatter Reveal */}
+          <div className="bento-card p-3 flex flex-col relative h-[450px]">
+            {/* Top Header */}
+            <div className="h-8 flex justify-between items-center px-3 flex-shrink-0">
+               <span className="text-xs font-mono font-bold tracking-[0.2em] uppercase text-zinc-500 bg-zinc-900/50 px-2 py-1 rounded">EXP_04</span>
+               <span className="text-[10px] font-mono font-bold tracking-[0.2em] uppercase text-zinc-500">ACID INK</span>
+            </div>
+            
+            {/* Component Container */}
+            <div className="relative w-full flex-grow rounded-[16px] overflow-hidden border border-border">
+               <PaintDripRevealCard />
+            </div>
+
+            {/* Bottom Footer Info */}
+            <div className="h-8 flex justify-between items-center px-3 flex-shrink-0 text-zinc-600 font-mono text-[10px] uppercase">
+                <span>INTERACT: CLICK</span>
+                <span>PHYSICS: GRAVITY</span>
+            </div>
+          </div>
+
+          {/* Slot 5: Empty Placeholder */}
           <div className="bento-card flex flex-col items-center justify-center text-center relative h-[450px] border border-dashed border-border/50 bg-black/20">
-            <span className="text-xs font-mono text-zinc-600 mb-2">[SLOT_03]</span>
+            <span className="text-xs font-mono text-zinc-600 mb-2">[SLOT_05]</span>
+            <span className="text-sm font-bold tracking-widest text-zinc-500 uppercase">Awaiting Implementation</span>
+          </div>
+
+          {/* Slot 6: Empty Placeholder */}
+          <div className="bento-card flex flex-col items-center justify-center text-center relative h-[450px] border border-dashed border-border/50 bg-black/20">
+            <span className="text-xs font-mono text-zinc-600 mb-2">[SLOT_06]</span>
             <span className="text-sm font-bold tracking-widest text-zinc-500 uppercase">Awaiting Implementation</span>
           </div>
           
