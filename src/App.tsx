@@ -7,6 +7,7 @@ import { FloatingDeck } from './components/FloatingDeck';
 import { ParallaxCard } from './components/ParallaxCard';
 import { DepthMapCard } from './components/DepthMapCard';
 import { SpotlightCard } from './components/SpotlightCard';
+import { XRayRevealCard } from './components/XRayRevealCard';
 
 export default function App() {
   const [isEngineInitialized, setIsEngineInitialized] = useState(false);
@@ -195,10 +196,12 @@ export default function App() {
             <SpotlightCard />
           </div>
 
-          {/* Slot 2: Empty Placeholder */}
-          <div className="bento-card flex flex-col items-center justify-center text-center relative h-[450px] border border-dashed border-border/50 bg-black/20">
-            <span className="text-xs font-mono text-zinc-600 mb-2">[SLOT_02]</span>
-            <span className="text-sm font-bold tracking-widest text-zinc-500 uppercase">Awaiting Implementation</span>
+          {/* Slot 2: X-Ray Reveal */}
+          <div className="bento-card p-0 overflow-hidden relative h-[450px]">
+            <XRayRevealCard 
+              topImage="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=1000&auto=format&fit=crop" 
+              bottomImage="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1000&auto=format&fit=crop" 
+            />
           </div>
 
           {/* Slot 3: Empty Placeholder */}
