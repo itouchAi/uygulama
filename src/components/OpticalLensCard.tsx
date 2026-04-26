@@ -19,7 +19,11 @@ export function OpticalLensCard() {
     container.appendChild(renderer.domElement);
 
     const loader = new THREE.TextureLoader();
-    const texBase = loader.load('/depth.png');
+    const texBase = loader.load('/depth.png', (t) => {
+        if (t.image && t.image.width) {
+            material.uniforms.uImageResolution.value.set(t.image.width, t.image.height);
+        }
+    });
     const texReveal = loader.load('/color.png');
 
     const material = new THREE.ShaderMaterial({
@@ -28,6 +32,7 @@ export function OpticalLensCard() {
         tReveal: { value: texReveal },
         uMouse: { value: new THREE.Vector2(0.5, 0.5) },
         uResolution: { value: new THREE.Vector4(container.clientWidth, container.clientHeight, 1, 1) },
+        uImageResolution: { value: new THREE.Vector2(0, 0) },
         uRadius: { value: 0.0 } // Starts at 0, grows on hover
       },
       vertexShader: `
@@ -42,9 +47,24 @@ export function OpticalLensCard() {
         uniform sampler2D tReveal;
         uniform vec2 uMouse;
         uniform vec4 uResolution;
+        uniform vec2 uImageResolution;
         uniform float uRadius;
         
         varying vec2 vUv;
+
+        // Helper to convert normalized UVs to Object-Fit: Cover UVs 
+        vec2 getCoverUv(vec2 inputUv) {
+            if (uImageResolution.x <= 0.0) return inputUv; // Fallback
+            float imageAspect = uImageResolution.x / uImageResolution.y;
+            float screenAspect = uResolution.x / uResolution.y;
+            vec2 scale = vec2(1.0);
+            if (screenAspect < imageAspect) {
+                scale.x = screenAspect / imageAspect;
+            } else {
+                scale.y = imageAspect / screenAspect;
+            }
+            return (inputUv - 0.5) * scale + 0.5;
+        }
 
         void main() {
           vec2 uv = vUv;
@@ -56,7 +76,7 @@ export function OpticalLensCard() {
           float dist = length(p);
 
           // Base background image (Depth/X-Ray)
-          vec4 baseColor = texture2D(tBase, uv);
+          vec4 baseColor = texture2D(tBase, getCoverUv(uv));
 
           // If the radius is completely zero, just draw the base early to save GPU
           if (uRadius < 0.001) {
@@ -70,17 +90,16 @@ export function OpticalLensCard() {
               vec3 normal = normalize(vec3(p.x, p.y, z));
               
               // 2. Fisheye Magnification (Refraction)
-              // Pulls the UV coordinates slightly towards the center of the mouse
               float magnification = 0.5; 
               vec2 distortedUv = mouse + (uv - mouse) * (1.0 - z * magnification);
               
-              // Sample the pristine color image with the bent UVs
-              vec4 revealColor = texture2D(tReveal, distortedUv);
+              // Sample using the cover projection
+              vec4 revealColor = texture2D(tReveal, getCoverUv(distortedUv));
               
               // 3. Chromatic Aberration near the glass edges
               float edgeDistortion = smoothstep(uRadius * 0.6, uRadius, dist) * 0.015;
-              float r = texture2D(tReveal, distortedUv + vec2(edgeDistortion, 0.0)).r;
-              float b = texture2D(tReveal, distortedUv - vec2(edgeDistortion, 0.0)).b;
+              float r = texture2D(tReveal, getCoverUv(distortedUv + vec2(edgeDistortion, 0.0))).r;
+              float b = texture2D(tReveal, getCoverUv(distortedUv - vec2(edgeDistortion, 0.0))).b;
               revealColor.r = mix(revealColor.r, r, 0.7);
               revealColor.b = mix(revealColor.b, b, 0.7);
               

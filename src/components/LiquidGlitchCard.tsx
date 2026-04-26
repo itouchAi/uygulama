@@ -20,7 +20,9 @@ export function LiquidGlitchCard() {
 
     const loader = new THREE.TextureLoader();
     // Depth image as the base, Color image as the revealed image
-    const tex1 = loader.load('/depth.png');
+    const tex1 = loader.load('/depth.png', (t) => {
+       material.uniforms.uImageResolution.value.set(t.image.width, t.image.height);
+    });
     const tex2 = loader.load('/color.png');
 
     const material = new THREE.ShaderMaterial({
@@ -30,7 +32,9 @@ export function LiquidGlitchCard() {
         tDiffuse1: { value: tex1 },
         tDiffuse2: { value: tex2 },
         uMouse: { value: new THREE.Vector2(0.5, 0.5) },
-        uResolution: { value: new THREE.Vector4(container.clientWidth, container.clientHeight, 1, 1) }
+        uResolution: { value: new THREE.Vector4(container.clientWidth, container.clientHeight, 1, 1) },
+        uImageResolution: { value: new THREE.Vector2(0, 0) },
+        uVelocity: { value: 0 }
       },
       vertexShader: `
         varying vec2 vUv;
@@ -45,22 +49,39 @@ export function LiquidGlitchCard() {
         uniform sampler2D tDiffuse1;
         uniform sampler2D tDiffuse2;
         uniform vec2 uMouse;
+        uniform vec4 uResolution;
+        uniform vec2 uImageResolution;
+        uniform float uVelocity;
+
         varying vec2 vUv;
 
         void main() {
+          // Calculate object-fit: cover equivalent UVs
           vec2 uv = vUv;
+          if (uImageResolution.x > 0.0) {
+              float imageAspect = uImageResolution.x / uImageResolution.y;
+              float screenAspect = uResolution.x / uResolution.y;
+              
+              vec2 scale = vec2(1.0);
+              if (screenAspect < imageAspect) {
+                  scale.x = screenAspect / imageAspect;
+              } else {
+                  scale.y = imageAspect / screenAspect;
+              }
+              uv = (uv - 0.5) * scale + 0.5;
+          }
           
-          // Distance from mouse cursor
-          float dist = distance(uv, uMouse);
+          // Distance from mouse cursor (Using un-scaled vUv for accurate spatial physics interaction)
+          float dist = distance(vUv, uMouse);
           
           // 1. Calculate a dynamic water wave / ripple effect based on mouse distance and time
           float wave = sin(dist * 40.0 - uTime * 15.0);
           
           // 2. Calculate Intensity
           // - High intensity in the exact middle of the transition (RGB burst!)
-          // - Low continuous intensity when fully hovered (Water reflection)
+          // - Dynamic intensity when hovered, decaying to 0 when mouse stops (uVelocity)
           float transitionBurst = sin(uProgress * 3.14159265) * 0.15; 
-          float continuousHover = uProgress * 0.01; 
+          float continuousHover = uVelocity * 0.08 * uProgress; 
           float intensity = transitionBurst + continuousHover;
           
           // 3. RGB Chromatic Aberration logic (Separating red, green, blue channels in different directions)
@@ -99,6 +120,8 @@ export function LiquidGlitchCard() {
 
     let animationFrameId: number;
     let targetProgress = 0;
+    let targetVelocity = 0;
+    let lastMouse = { x: 0.5, y: 0.5 };
     
     // Resize bounds
     const onResize = () => {
@@ -113,6 +136,10 @@ export function LiquidGlitchCard() {
       // Smooth lerp (interpolation) towards 1 when hovered, and 0 when unhovered
       material.uniforms.uProgress.value += (targetProgress - material.uniforms.uProgress.value) * 0.08;
       
+      // Decay velocity exponentially when mouse stops
+      targetVelocity *= 0.90;
+      material.uniforms.uVelocity.value += (targetVelocity - material.uniforms.uVelocity.value) * 0.15;
+      
       renderer.render(scene, camera);
       animationFrameId = requestAnimationFrame(render);
     };
@@ -124,6 +151,14 @@ export function LiquidGlitchCard() {
       // Normalize mouse coords to 0.0 -> 1.0 for UV mapping
       const x = (e.clientX - rect.left) / rect.width;
       const y = 1.0 - ((e.clientY - rect.top) / rect.height); // WebGL Y is inverted!
+      
+      // Calculate mouse speed for dynamic ripple intensity
+      const dx = x - lastMouse.x;
+      const dy = y - lastMouse.y;
+      const speed = Math.sqrt(dx * dx + dy * dy);
+      targetVelocity = Math.min(targetVelocity + speed * 15.0, 1.0);
+      lastMouse = { x, y };
+
       material.uniforms.uMouse.value.set(x, y);
     };
 

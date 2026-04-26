@@ -13,6 +13,7 @@ import { LiquidGlitchCard } from './components/LiquidGlitchCard';
 import { PaintDripRevealCard } from './components/PaintDripRevealCard';
 import { PaperTearCard } from './components/PaperTearCard';
 import { OpticalLensCard } from './components/OpticalLensCard';
+import { FireRevealCard } from './components/FireRevealCard';
 
 export default function App() {
   const [isEngineInitialized, setIsEngineInitialized] = useState(false);
@@ -329,6 +330,45 @@ export default function App() {
                 <span>INTERACT: HOVER</span>
                 <span>ENGINE: WEBGL</span>
             </div>
+          </div>
+          
+        </div>
+      </section>
+
+      {/* Row 3: Tertiary Experiments */}
+      <section className="w-full px-4 md:px-6 py-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-stretch">
+          
+          {/* Slot 7: Fire Reveal */}
+          <div className="bento-card p-3 flex flex-col relative h-[450px]">
+            {/* Top Header */}
+            <div className="h-8 flex justify-between items-center px-3 flex-shrink-0">
+               <span className="text-xs font-mono font-bold tracking-[0.2em] uppercase text-zinc-500 bg-zinc-900/50 px-2 py-1 rounded">EXP_07</span>
+               <span className="text-[10px] font-mono font-bold tracking-[0.2em] uppercase text-zinc-500">COMBUSTION</span>
+            </div>
+            
+            {/* Component Container */}
+            <div className="relative w-full flex-grow rounded-[16px] overflow-hidden border border-border">
+               <FireRevealCard />
+            </div>
+
+            {/* Bottom Footer Info */}
+            <div className="h-8 flex justify-between items-center px-3 flex-shrink-0 text-zinc-600 font-mono text-[10px] uppercase">
+                <span>INTERACT: CLICK</span>
+                <span>ENGINE: CANVAS_2D</span>
+            </div>
+          </div>
+
+          {/* Slot 8: Empty Placeholder */}
+          <div className="bento-card flex flex-col items-center justify-center text-center relative h-[450px] border border-dashed border-border/50 bg-black/20">
+            <span className="text-xs font-mono text-zinc-600 mb-2">[SLOT_08]</span>
+            <span className="text-sm font-bold tracking-widest text-zinc-500 uppercase">Awaiting Implementation</span>
+          </div>
+
+          {/* Slot 9: Empty Placeholder */}
+          <div className="bento-card flex flex-col items-center justify-center text-center relative h-[450px] border border-dashed border-border/50 bg-black/20">
+            <span className="text-xs font-mono text-zinc-600 mb-2">[SLOT_09]</span>
+            <span className="text-sm font-bold tracking-widest text-zinc-500 uppercase">Awaiting Implementation</span>
           </div>
           
         </div>
