@@ -1,7 +1,7 @@
 import { useRef, useEffect, useState } from 'react';
 import * as THREE from 'three';
 
-export function LiquidGlitchCard() {
+export function LiquidGlitchCard({ bottomImage = '/color.png' }: { bottomImage?: string }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -23,7 +23,7 @@ export function LiquidGlitchCard() {
     const tex1 = loader.load('/depth.png', (t) => {
        material.uniforms.uImageResolution.value.set(t.image.width, t.image.height);
     });
-    const tex2 = loader.load('/color.png');
+    const tex2 = loader.load(bottomImage);
 
     const material = new THREE.ShaderMaterial({
       uniforms: {
@@ -187,7 +187,7 @@ export function LiquidGlitchCard() {
       material.dispose();
       renderer.dispose();
     };
-  }, []);
+  }, [bottomImage]);
 
   return (
     <div

@@ -1,7 +1,7 @@
 import { useRef, useEffect, useState } from 'react';
 import * as THREE from 'three';
 
-export function OpticalLensCard() {
+export function OpticalLensCard({ bottomImage = '/color.png' }: { bottomImage?: string }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -24,7 +24,7 @@ export function OpticalLensCard() {
             material.uniforms.uImageResolution.value.set(t.image.width, t.image.height);
         }
     });
-    const texReveal = loader.load('/color.png');
+    const texReveal = loader.load(bottomImage);
 
     const material = new THREE.ShaderMaterial({
       uniforms: {
@@ -183,7 +183,7 @@ export function OpticalLensCard() {
       material.dispose();
       renderer.dispose();
     };
-  }, []);
+  }, [bottomImage]);
 
   return (
     <div

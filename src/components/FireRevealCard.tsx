@@ -20,7 +20,7 @@ interface Particle {
   size: number;
 }
 
-export function FireRevealCard() {
+export function FireRevealCard({ bottomImage = '/color.png' }: { bottomImage?: string }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const maskCanvasRef = useRef<HTMLCanvasElement>(null);
   const fireCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -33,7 +33,6 @@ export function FireRevealCard() {
   const animationRef = useRef<number | null>(null);
 
   const topImage = '/depth.png';
-  const bottomImage = '/color.png';
 
   const drawImageCover = (ctx: CanvasRenderingContext2D, img: HTMLImageElement, cw: number, ch: number) => {
     const ir = img.width / img.height;

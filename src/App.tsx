@@ -14,10 +14,22 @@ import { PaintDripRevealCard } from './components/PaintDripRevealCard';
 import { PaperTearCard } from './components/PaperTearCard';
 import { OpticalLensCard } from './components/OpticalLensCard';
 import { FireRevealCard } from './components/FireRevealCard';
+import { IceShatterCard } from './components/IceShatterCard';
+import { ChaosCard } from './components/ChaosCard';
 
 export default function App() {
   const [isEngineInitialized, setIsEngineInitialized] = useState(false);
+  const [revealImageSrc, setRevealImageSrc] = useState('/color.png');
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setRevealImageSrc(url);
+    }
+  };
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"]
@@ -152,7 +164,7 @@ export default function App() {
           {/* AI Depth Map Parallax Card */}
           <div className="bento-card md:col-span-4 p-0 overflow-hidden relative aspect-[3/4] md:aspect-[4/5] bg-zinc-900 border border-zinc-800">
              <DepthMapCard 
-               imageSrc="/color.png"
+               imageSrc={revealImageSrc}
                depthMapSrc="/depth.png"
                className="w-full h-full rounded-[30px] block"
              />
@@ -217,7 +229,7 @@ export default function App() {
             <div className="relative w-full flex-grow rounded-[16px] overflow-hidden border border-border bg-zinc-900 pointer-events-auto">
               <XRayRevealCard 
                 topImage="/depth.png" 
-                bottomImage="/color.png" 
+                bottomImage={revealImageSrc} 
               />
             </div>
             
@@ -235,7 +247,7 @@ export default function App() {
             
             {/* Component Container */}
             <div className="relative w-full flex-grow rounded-[16px] overflow-hidden">
-               <BrushRevealCard />
+               <BrushRevealCard bottomImage={revealImageSrc} />
             </div>
 
             {/* Bottom Footer Info */}
@@ -255,7 +267,7 @@ export default function App() {
             
             {/* Component Container */}
             <div className="relative w-full flex-grow rounded-[16px] overflow-hidden border border-border bg-black">
-               <LiquidGlitchCard />
+               <LiquidGlitchCard bottomImage={revealImageSrc} />
             </div>
 
             {/* Bottom Footer Info */}
@@ -282,7 +294,7 @@ export default function App() {
             
             {/* Component Container */}
             <div className="relative w-full flex-grow rounded-[16px] overflow-hidden border border-border">
-               <PaintDripRevealCard />
+               <PaintDripRevealCard bottomImage={revealImageSrc} />
             </div>
 
             {/* Bottom Footer Info */}
@@ -302,7 +314,7 @@ export default function App() {
             
             {/* Component Container */}
             <div className="relative w-full flex-grow rounded-[16px] overflow-hidden border border-border">
-               <PaperTearCard />
+               <PaperTearCard bottomImage={revealImageSrc} />
             </div>
 
             {/* Bottom Footer Info */}
@@ -322,7 +334,7 @@ export default function App() {
             
             {/* Component Container */}
             <div className="relative w-full flex-grow rounded-[16px] overflow-hidden border border-border">
-               <OpticalLensCard />
+               <OpticalLensCard bottomImage={revealImageSrc} />
             </div>
 
             {/* Bottom Footer Info */}
@@ -349,7 +361,7 @@ export default function App() {
             
             {/* Component Container */}
             <div className="relative w-full flex-grow rounded-[16px] overflow-hidden border border-border">
-               <FireRevealCard />
+               <FireRevealCard bottomImage={revealImageSrc} />
             </div>
 
             {/* Bottom Footer Info */}
@@ -359,16 +371,44 @@ export default function App() {
             </div>
           </div>
 
-          {/* Slot 8: Empty Placeholder */}
-          <div className="bento-card flex flex-col items-center justify-center text-center relative h-[450px] border border-dashed border-border/50 bg-black/20">
-            <span className="text-xs font-mono text-zinc-600 mb-2">[SLOT_08]</span>
-            <span className="text-sm font-bold tracking-widest text-zinc-500 uppercase">Awaiting Implementation</span>
+          {/* Slot 8: Ice Shatter */}
+          <div className="bento-card p-3 flex flex-col relative h-[450px]">
+            {/* Top Header */}
+            <div className="h-8 flex justify-between items-center px-3 flex-shrink-0">
+               <span className="text-xs font-mono font-bold tracking-[0.2em] uppercase text-zinc-500 bg-zinc-900/50 px-2 py-1 rounded">EXP_08</span>
+               <span className="text-[10px] font-mono font-bold tracking-[0.2em] uppercase text-zinc-500">CRYSTAL FRACTURE</span>
+            </div>
+            
+            {/* Component Container */}
+            <div className="relative w-full flex-grow rounded-[16px] overflow-hidden border border-border">
+               <IceShatterCard bottomImage={revealImageSrc} />
+            </div>
+
+            {/* Bottom Footer Info */}
+            <div className="h-8 flex justify-between items-center px-3 flex-shrink-0 text-zinc-600 font-mono text-[10px] uppercase">
+                <span>INTERACT: CLICK</span>
+                <span>ENGINE: CANVAS_2D</span>
+            </div>
           </div>
 
-          {/* Slot 9: Empty Placeholder */}
-          <div className="bento-card flex flex-col items-center justify-center text-center relative h-[450px] border border-dashed border-border/50 bg-black/20">
-            <span className="text-xs font-mono text-zinc-600 mb-2">[SLOT_09]</span>
-            <span className="text-sm font-bold tracking-widest text-zinc-500 uppercase">Awaiting Implementation</span>
+          {/* Slot 9: Chaos Mode */}
+          <div className="bento-card p-3 flex flex-col relative h-[450px]">
+            {/* Top Header */}
+            <div className="h-8 flex justify-between items-center px-3 flex-shrink-0">
+               <span className="text-xs font-mono font-bold tracking-[0.2em] uppercase text-zinc-500 bg-zinc-900/50 px-2 py-1 rounded">EXP_09</span>
+               <span className="text-[10px] font-mono font-bold tracking-[0.2em] uppercase text-accent animate-pulse">CHAOS ENGINE</span>
+            </div>
+            
+            {/* Component Container */}
+            <div className="relative w-full flex-grow rounded-[16px] overflow-hidden border border-border outline outline-1 outline-accent/30 shadow-[0_0_20px_rgba(200,250,5,0.1)]">
+               <ChaosCard bottomImage={revealImageSrc} />
+            </div>
+
+            {/* Bottom Footer Info */}
+            <div className="h-8 flex justify-between items-center px-3 flex-shrink-0 text-zinc-600 font-mono text-[10px] uppercase">
+                <span>INTERACT: DYNAMIC</span>
+                <span className="text-accent">ROULETTE</span>
+            </div>
           </div>
           
         </div>
@@ -399,7 +439,15 @@ export default function App() {
               className="font-display font-bold text-[10vw] leading-[0.9] tracking-tighter uppercase text-accent"
           />
 
-          <motion.div 
+          <input 
+            type="file" 
+            accept="image/*" 
+            ref={fileInputRef} 
+            onChange={handleImageUpload} 
+            className="hidden" 
+          />
+          <motion.button 
+             onClick={() => fileInputRef.current?.click()}
              initial={{ scale: 0.8, opacity: 0 }}
              whileInView={{ scale: 1, opacity: 1 }}
              transition={{ duration: 1, ease: "easeOut", delay: 0.2 }}
@@ -407,7 +455,7 @@ export default function App() {
              className="mt-12 px-8 py-4 bg-white text-black rounded-full font-bold text-sm tracking-widest cursor-pointer hover:bg-accent transition-colors duration-300 inline-block"
           >
             LET'S TALK
-          </motion.div>
+          </motion.button>
 
           <div className="mt-24 w-full flex flex-col md:flex-row justify-between items-center text-text-muted text-[10px] sm:text-xs font-mono font-bold tracking-widest uppercase border-t border-border pt-8">
             <p>© 2026 KINETIC STUDIO</p>

@@ -16,7 +16,7 @@ interface Drop {
   speed: number;
 }
 
-export function PaintDripRevealCard() {
+export function PaintDripRevealCard({ bottomImage = '/color.png' }: { bottomImage?: string }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isHovered, setIsHovered] = useState(false);
@@ -26,7 +26,6 @@ export function PaintDripRevealCard() {
   const animationRef = useRef<number | null>(null);
 
   const topImage = '/depth.png';
-  const bottomImage = '/color.png';
 
   // Perfectly aligns canvas drawing with CSS object-fit: cover
   const drawImageCover = (ctx: CanvasRenderingContext2D, img: HTMLImageElement, cw: number, ch: number) => {
